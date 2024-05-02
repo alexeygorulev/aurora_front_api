@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/auth-create-user-dto';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -8,6 +8,7 @@ import { Roles } from './roles/roles.decorator';
 import { Role } from '@prisma/client';
 import { RolesGuard } from './roles/roles.guadrd';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from './auth-user-decorator';
 
 @ApiTags(ENDPOINTS.API_TAG)
 @Controller(ENDPOINTS.AUTH)
@@ -30,12 +31,12 @@ export class AuthController {
     return this.authService.signUp(createUserDto);
   }
 
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @ApiResponse(API_EXAMPLES_PROFILE.RESPONSE_EXAMPLE)
   @Roles(Role.Admin, Role.Moderator, Role.User)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('profile')
-  getProfile(@Request() req): any {
-    return this.authService.getUserProfile(req.user);
+  getProfile(@User('login') login: string): any {
+    return this.authService.getUserProfile(login);
   }
 }

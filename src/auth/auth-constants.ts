@@ -21,9 +21,10 @@ export const API_EXAMPLES_REGISTRATION = {
     examples: {
       example1: {
         value: {
-          login: 'johndoe',
-          password: 'yourSecurePassword',
-          email: 'johndoe@example.com',
+          login: 'kek',
+          password: 'kek',
+          email: 'kek@example.com',
+          consent: true,
           role: 'User',
         },
       },

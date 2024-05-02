@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { $Enums } from '@prisma/client';
-import { IsEmail, IsEnum, IsNotEmpty, IsString, Length } from 'class-validator';
+import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -27,6 +27,11 @@ export class CreateUserDto {
   @IsEmail()
   @ApiProperty({ example: 'johndoe@example.com', description: 'User email' })
   email: string;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  @ApiProperty({ example: 'true', description: 'user consent' })
+  consent: boolean;
 
   @IsEnum({ user: 'User', admin: 'Admin', moderator: 'Moderator' })
   @ApiProperty({
