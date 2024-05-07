@@ -5,6 +5,10 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { PassportModule } from '@nestjs/passport';
+import { YandexStrategy } from './strategy/yandex.strategy';
+import { CookieInterceptor } from './cookie/cookie.interseptor';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
@@ -14,9 +18,11 @@ import { JwtStrategy } from './strategy/jwt.strategy';
       signOptions: { expiresIn: '24h' },
     }),
     PrismaModule,
+    PassportModule.register({ defaultStrategy: 'yandex' }),
+    MailModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, YandexStrategy, CookieInterceptor],
   exports: [JwtStrategy],
 })
 export class AuthModule {}

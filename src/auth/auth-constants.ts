@@ -12,6 +12,7 @@ export const ENDPOINTS = {
 export const EXCEPTION = {
   INCORRECT_LOGIN_OR_PASSWORD: 'Логин или пароль введен не правильно',
   USER_EXIST: 'Такой пользователь уже существует',
+  USER_EXIST_EMAIL: 'Пользователь с таким email уже существует',
 };
 
 export const API_EXAMPLES_REGISTRATION = {

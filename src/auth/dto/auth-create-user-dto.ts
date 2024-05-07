@@ -17,6 +17,18 @@ export class CreateUserDto {
   login: string;
 
   @IsNotEmpty()
+  @Length(0, 16)
+  @IsString()
+  @ApiProperty({ example: 'lexa', description: 'User name' })
+  first_name: string;
+
+  @IsNotEmpty()
+  @Length(0, 16)
+  @IsString()
+  @ApiProperty({ example: 'gorulev', description: 'User last name' })
+  last_name: string;
+
+  @IsNotEmpty()
   @Length(0, 20)
   @IsString()
   @ApiProperty({ example: 'yourSecurePassword', description: 'User password' })
