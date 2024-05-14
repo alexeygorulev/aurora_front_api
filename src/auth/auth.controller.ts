@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -23,6 +24,8 @@ import { User } from './auth-user-decorator';
 import { randomBytes } from 'crypto';
 import { CookieInterceptor } from './cookie/cookie.interseptor';
 import { ConfigService } from '@nestjs/config';
+import { UpdateCreateUserDtoToForgetPassword } from './dto/auth-forget-password-dto';
+import { UpdateCreateUserDtoToResetPassword } from './dto/auth-reset-password-dto';
 
 @ApiTags(ENDPOINTS.API_TAG)
 @Controller(ENDPOINTS.AUTH)
@@ -60,18 +63,37 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('/email')
+  @Get(ENDPOINTS.REDIRECT_CONFIRM_EMAIL)
   async checkEmail(@User('email') email: string, @Res() res): Promise<void> {
-    await this.authService.acceptEmail(email);
+    const { skip } = await this.authService.checkConfirmEmail(email);
     const defaultInstance = this.configService.get<string>('DEFAULT_INSTANCE_FRONT');
-    res.redirect(defaultInstance);
+    if (!skip || !res.cookie['aurora_token']) {
+      const { access_token } = await this.authService.acceptEmail(email);
+      res.cookie('aurora_token', access_token, { httpOnly: true, secure: true });
+    }
+    res.redirect(`${defaultInstance}?checkEmail=true`);
   }
 
-  @Get('yandex')
+  @Post(ENDPOINTS.PREPARE_RESET_PASSWORD)
+  async forgetPassword(@Body() data: UpdateCreateUserDtoToForgetPassword): Promise<void> {
+    return this.authService.prepareUserByForgetPassword(data);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post(ENDPOINTS.RESET_PASSWORD)
+  async resetPassword(
+    @User('email') email: string,
+    @Query('token') token: string,
+    @Body() data: UpdateCreateUserDtoToResetPassword,
+  ): Promise<any> {
+    return this.authService.resetPassword(email, token, data);
+  }
+
+  @Get(ENDPOINTS.YANDEX)
   @UseGuards(AuthGuard('yandex'))
   yandexLogin() {}
 
-  @Get('yandex/callback')
+  @Get(ENDPOINTS.YANDEX_CALLBACK)
   @UseGuards(AuthGuard('yandex'))
   async yandexCallback(@Req() req, @Res() res) {
     const { login, email, first_name, last_name } = req.user;
@@ -87,7 +109,7 @@ export class AuthController {
     };
 
     const token = await this.authService.signUpOAuth(prepareData);
-    res.cookie('token', token.access_token, { httpOnly: true, secure: true });
+    res.cookie('aurora_token', token.access_token, { httpOnly: true, secure: true });
     return res.redirect(process.env.DEFAULT_INSTANCE_FRONT);
   }
 }

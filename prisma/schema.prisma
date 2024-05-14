@@ -8,15 +8,16 @@ datasource db {
 }
 
 model users {
-  user_id      String  @id(map: "pk_user") @default(uuid())
-  login        String  @unique @db.VarChar(30)
-  first_name   String  @default("unKnown") @db.VarChar(30)
-  last_name    String  @default("unKnown") @db.VarChar(30)
-  password     String  @db.VarChar(150)
-  email        String  @unique @db.VarChar(30)
-  consent      Boolean @default(false)
-  confirm_mail Boolean @default(false)
-  role         Role    @default(User)
+  user_id         String  @id(map: "pk_user") @default(uuid())
+  login           String  @unique @db.VarChar(30)
+  first_name      String  @default("unKnown") @db.VarChar(30)
+  last_name       String  @default("unKnown") @db.VarChar(30)
+  password        String  @db.VarChar(150)
+  email           String  @unique @db.VarChar(30)
+  consent         Boolean @default(false)
+  temporary_token String  @default("")
+  confirm_mail    Boolean @default(false)
+  role            Role    @default(User)
 }
 
 enum Role {

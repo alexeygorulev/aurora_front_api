@@ -12,6 +12,7 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       envFilePath: process.env.NODE_ENV === 'development' ? '.development.env' : '.env',
       isGlobal: true,
+      load: [() => require('./mail/config/config.json')],
     }),
     AuthModule,
     PrismaModule,

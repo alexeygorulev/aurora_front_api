@@ -1,0 +1,10 @@
+{
+  "verification": {
+    "subject": "Подтверждение адреса электронной почты",
+    "templatePath": "mail/templates/verificationEmail.html"
+  },
+  "passwordReset": {
+    "subject": "Подтвердите изменение пароля",
+    "templatePath": "mail/templates/passwordResetEmail.html"
+  }
+}

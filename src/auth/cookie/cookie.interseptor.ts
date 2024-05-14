@@ -9,7 +9,7 @@ export class CookieInterceptor implements NestInterceptor {
       map((data) => {
         const res = context.switchToHttp().getResponse<Response>();
         if (data && data.access_token) {
-          res.cookie('token', data.access_token, {
+          res.cookie('aurora_token', data.access_token, {
             httpOnly: true,
             secure: true,
             expires: new Date(Date.now() + 86400e3),

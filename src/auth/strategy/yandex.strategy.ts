@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-oauth2';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
+import { ENDPOINTS } from '../auth-constants';
 
 @Injectable()
 export class YandexStrategy extends PassportStrategy(Strategy, 'yandex') {
@@ -12,7 +13,7 @@ export class YandexStrategy extends PassportStrategy(Strategy, 'yandex') {
       tokenURL: 'https://oauth.yandex.ru/token',
       clientID: configService.get<string>('YANDEX_CLIENT_ID'),
       clientSecret: configService.get<string>('YANDEX_CLIENT_SECRET'),
-      callbackURL: `${configService.get<string>('DEFAULT_INSTANCE_FRONT_API')}/aurora-front-api/auth/yandex/callback`,
+      callbackURL: `${configService.get<string>('DEFAULT_INSTANCE_FRONT_API')}/aurora-front-api/auth${ENDPOINTS.YANDEX_CALLBACK}`,
       scope: ['login:email', 'login:info'],
     });
   }
